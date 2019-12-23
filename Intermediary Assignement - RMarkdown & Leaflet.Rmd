@@ -1,0 +1,39 @@
+---
+title: "Intermediary Assignment RMarkdown and leaflet"
+author: "Twan Houwers"
+date: "23-12-2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install_load <- function (package1, ...){   
+  packages <- c(package1, ...)
+  for(package in packages){
+    if(package %in% rownames(installed.packages()))
+      do.call('library', list(package))
+    else {
+      install.packages(package)
+      do.call("library", list(package))
+    }
+  } 
+}
+```
+
+### Set seed & install/load packages
+```{r test, results  ="hide", message=FALSE, warning=FALSE}
+set.seed(1337)
+install_load("dplyr","caret","leaflet")
+```
+
+### Download data
+```{r data}
+df = read.csv("data/nl.csv")
+```
+
+### Create map
+```{r Leaflet, echo=TRUE, message=FALSE}
+df %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(clusterOptions = markerClusterOptions())
+```
