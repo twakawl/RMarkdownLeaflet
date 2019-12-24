@@ -1,0 +1,49 @@
+---
+title: "Intermediary Assignment RMarkdown and leaflet"
+author: "Twan Houwers"
+date: "23-12-2019"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install_load <- function (package1, ...){   
+  packages <- c(package1, ...)
+  for(package in packages){
+    if(package %in% rownames(installed.packages()))
+      do.call('library', list(package))
+    else {
+      install.packages(package)
+      do.call("library", list(package))
+    }
+  } 
+}
+```
+
+### Set seed & install/load packages
+```{r test, results  ="hide", message=FALSE, warning=FALSE}
+set.seed(1337)
+install_load("reshape","plotly")
+```
+
+### Download data
+```{r data}
+df = read.csv("data/nl.csv")
+counttable = as.data.frame(table(df$admin))
+colnames(counttable) = c("Province","# Cities")
+counttable = counttable[order(-counttable$`# Cities`),]
+head(counttable)
+```
+
+### Create plot with plotly
+```{r plotly, echo=TRUE, message=FALSE}
+p <- plot_ly(
+  x = counttable$Province,
+  y = counttable$`# Cities`,
+  name = "Province barplot",
+  type = "bar")   %>%
+  layout(title = "Number of cities per Province in the Netherlands",
+         xaxis = list(title = ""),
+         yaxis = list(title = "# cities")
+  )
+p
+```
